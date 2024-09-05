@@ -1,4 +1,4 @@
-https://restaurant-dc.netlify.app/menu
+https://restaurant-dc.netlify.app/
 
 # React + Vite
 
