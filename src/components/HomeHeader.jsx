@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Typography, Container, Button } from '@mui/material'; // Importing Material-UI components
 import { Link } from 'react-router-dom'; // Importing Link component for navigation
+import restaurantImage from '../components/img/restaurant.jpg'; // Import the image
+
 
 const HomeHeader = () => (
   <Box
@@ -17,7 +19,7 @@ const HomeHeader = () => (
         left: 0, // Align to the left of the parent
         width: '100%', // Full width
         height: '100%', // Full height
-        backgroundImage: 'url(./src/components/img/restaurant.jpg)', // Background image
+        backgroundImage: `url(${restaurantImage})`, // Background image
         backgroundSize: 'cover', // Cover the container
         backgroundPosition: 'center', // Center the background image
         animation: 'zoomInOut 10s infinite', // Apply animation
