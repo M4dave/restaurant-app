@@ -5,18 +5,12 @@ import {
   Grid,
   Typography,
   Container,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   CircularProgress,
+  Alert,
 } from "@mui/material";
-
+import axios from 'axios';
 
 const Reservation = () => {
-  // State to manage form input values
   const [formData, setFormData] = useState({
     name: "",
     date: "",
@@ -24,25 +18,10 @@ const Reservation = () => {
     people: "",
   });
 
-  // State to manage form validation errors
-  const [errors, setErrors] = useState({
-    name: "",
-    date: "",
-    time: "",
-    people: "",
-  });
-
-  // State to manage success message and Snackbar visibility
+  const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  // State to manage the confirmation dialog visibility
-  const [openDialog, setOpenDialog] = useState(false);
-
-  // State to manage loading indicator visibility
   const [loading, setLoading] = useState(false);
 
-  // Handler for input field changes
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -51,7 +30,6 @@ const Reservation = () => {
     });
   };
 
-  // Validate form fields and return if valid
   const validateForm = () => {
     let valid = true;
     const newErrors = {};
@@ -69,6 +47,12 @@ const Reservation = () => {
     if (!formData.time) {
       newErrors.time = "Time is required";
       valid = false;
+    } else {
+      const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
+      if (!timePattern.test(formData.time)) {
+        newErrors.time = "Time must be in HH:mm format";
+        valid = false;
+      }
     }
 
     if (!formData.people || isNaN(formData.people) || formData.people <= 0) {
@@ -80,165 +64,183 @@ const Reservation = () => {
     return valid;
   };
 
-  // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
     if (validateForm()) {
-      setOpenDialog(true); // Open confirmation dialog if form is valid
+      handleConfirmSubmit();
     }
   };
 
-  // Handle confirmation of form submission
-  const handleConfirmSubmit = () => {
-    setLoading(true); // Show loading spinner
+  // const handleConfirmSubmit = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.post('http://localhost:5000/api/reservations', formData);
+  //     setSuccessMessage("Reservation made successfully!");
+  //     setFormData({
+  //       name: "",
+  //       date: "",
+  //       time: "",
+  //       people: "",
+  //     });
+  //     setErrors({});
+  //   } catch (error) {
+  //     if (error.response) {
+  //       if (error.response.data.errors) {
+  //         const validationErrors = error.response.data.errors.reduce((acc, err) => {
+  //           acc[err.param] = err.msg;
+  //           return acc;
+  //         }, {});
+  //         setErrors(validationErrors);
+  //       } else if (error.response.data.error === 'Time slot already booked') {
+  //         setErrors({ general: 'This time slot is already booked. Please choose a different time.' });
+  //       } else {
+  //         setErrors({ general: "An unexpected error occurred. Please try again later." });
+  //       }
+  //     } else {
+  //       setErrors({ general: "Network error. Please check your connection." });
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-    // Simulate form submission with a delay
-    setTimeout(() => {
-      console.log("Reservation details:", formData);
-
-      // Set success message and show Snackbar
+  const handleConfirmSubmit = async () => {
+    setLoading(true);
+    try {
+      // Send the form data to the server
+      const response = await axios.post('http://localhost:5000/api/reservations', formData);
+      
+      // Handle success response
       setSuccessMessage("Reservation made successfully!");
-      setOpenSnackbar(true);
-
-      // Reset form data
       setFormData({
         name: "",
         date: "",
         time: "",
         people: "",
       });
-
-      setOpenDialog(false); // Close confirmation dialog
-      setLoading(false); // Hide loading spinner
-
-      // Hide Snackbar after a few seconds
-      setTimeout(() => setOpenSnackbar(false), 3000);
-    }, 2000); // Simulate delay
+      setErrors({});
+    } catch (error) {
+      if (error.response) {
+        if (error.response.data.errors) {
+          // Process validation errors from the server
+          const validationErrors = error.response.data.errors.reduce((acc, err) => {
+            acc[err.param] = err.msg;
+            return acc;
+          }, {});
+          setErrors(validationErrors);
+        } else if (error.response.data.error === 'Time slot already booked') {
+          // Handle specific double-booking error
+          setErrors({ general: 'This time slot is already booked. Please choose a different time.' });
+        } else {
+          // General error handling
+          setErrors({ general: "An unexpected error occurred. Please try again later." });
+        }
+      } else {
+        // Network error handling
+        setErrors({ general: "Network error. Please check your connection." });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   return (
-    <>
+    <Container
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: "600px" }}>
+        <Typography variant="h4" gutterBottom align="center">
+          Make a Reservation
+        </Typography>
 
-      <Container
-        sx={{
-          height: "100vh", // Full viewport height
-          display: "flex", // Flexbox layout
-          alignItems: "center", // Center items vertically
-          justifyContent: "center", // Center items horizontally
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "600px" }}>
-          {/* Header for the reservation form */}
-          <Typography variant="h4" gutterBottom align="center">
-            Make a Reservation
-          </Typography>
-    
-          {/* Form for making a reservation */}
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              {/* Name field */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  error={!!errors.name} // Show error state if there's an error
-                  helperText={errors.name} // Show error message
-                />
-              </Grid>
-    
-              {/* Date field */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  error={!!errors.date} // Show error state if there's an error
-                  helperText={errors.date} // Show error message
-                  InputLabelProps={{ shrink: true }} // Ensure label is properly displayed for date input
-                />
-              </Grid>
-    
-              {/* Time field */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="time"
-                  label="Time"
-                  name="time"
-                  value={formData.time}
-                  onChange={handleChange}
-                  error={!!errors.time} // Show error state if there's an error
-                  helperText={errors.time} // Show error message
-                  InputLabelProps={{ shrink: true }} // Ensure label is properly displayed for time input
-                />
-              </Grid>
-    
-              {/* Number of people field */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Number of People"
-                  name="people"
-                  value={formData.people}
-                  onChange={handleChange}
-                  error={!!errors.people} // Show error state if there's an error
-                  helperText={errors.people} // Show error message
-                />
-              </Grid>
-    
-              {/* Submit button */}
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={loading} // Disable button while loading
-                  fullWidth
-                >
-                  {loading ? <CircularProgress size={24} /> : "Reserve Table"} {/* Show loading spinner if loading */}
-                </Button>
-              </Grid>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                error={!!errors.name}
+                helperText={errors.name}
+              />
             </Grid>
-          </form>
-    
-          {/* Snackbar for displaying success messages */}
-          <Snackbar
-            open={openSnackbar} // Open or close the Snackbar
-            autoHideDuration={3000} // Auto-hide duration in milliseconds
-            onClose={() => setOpenSnackbar(false)} // Close Snackbar when clicked outside or after auto-hide
-          >
-            <Alert onClose={() => setOpenSnackbar(false)} severity="success">
-              {successMessage} {/* Display success message */}
-            </Alert>
-          </Snackbar>
-    
-          {/* Dialog for reservation confirmation */}
-          <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-            <DialogTitle>Confirm Reservation</DialogTitle>
-            <DialogContent>
-              <Typography>
-                Are you sure you want to make this reservation? {/* Confirmation message */}
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenDialog(false)} color="primary">
-                Cancel {/* Cancel button */}
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                error={!!errors.date}
+                helperText={errors.date}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="time"
+                label="Time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                error={!!errors.time}
+                helperText={errors.time}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Number of People"
+                name="people"
+                value={formData.people}
+                onChange={handleChange}
+                error={!!errors.people}
+                helperText={errors.people}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={loading}
+                fullWidth
+              >
+                {loading ? <CircularProgress size={24} /> : "Reserve Table"}
               </Button>
-              <Button onClick={handleConfirmSubmit} color="primary">
-                Confirm {/* Confirm button */}
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      </Container>
-    </>
+            </Grid>
+
+            {errors.general && (
+              <Grid item xs={12}>
+                <Alert severity="error">{errors.general}</Alert>
+              </Grid>
+            )}
+
+            {successMessage && !errors.general && (
+              <Grid item xs={12}>
+                <Alert severity="success">{successMessage}</Alert>
+              </Grid>
+            )}
+          </Grid>
+        </form>
+      </div>
+    </Container>
   );
 };
 
