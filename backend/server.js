@@ -24,10 +24,7 @@ const validateReservation = [
 ];
 
 // API endpoints
-
-// Create a reservation
 app.post('/api/reservations', validateReservation, async (req, res) => {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -36,7 +33,6 @@ app.post('/api/reservations', validateReservation, async (req, res) => {
     try {
       const { name, date, time, people } = req.body;
 
-      // Check if the time slot is already booked
       const existingReservation = await db.oneOrNone(
         'SELECT * FROM reservations WHERE date = $1 AND time = $2',
         [date, time]
@@ -46,17 +42,14 @@ app.post('/api/reservations', validateReservation, async (req, res) => {
         return res.status(409).json({ error: 'Time slot already booked' });
       }
 
-      // Create the new reservation
       await db.none('INSERT INTO reservations(name, date, time, people) VALUES($1, $2, $3, $4)', [name, date, time, people]);
       res.status(201).json({ message: 'Reservation created successfully' });
     } catch (error) {
-      console.error('Error creating reservation:', error.message); // Log error message
+      console.error('Error creating reservation:', error.message);
       res.status(500).json({ error: 'Failed to create reservation', details: error.message });
     }
 });
 
-
-// Get all reservations
 app.get('/api/reservations', async (req, res) => {
   try {
     const reservations = await db.any('SELECT * FROM reservations ORDER BY date, time');
@@ -67,7 +60,6 @@ app.get('/api/reservations', async (req, res) => {
   }
 });
 
-// Get a specific reservation by ID
 app.get('/api/reservations/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -85,12 +77,10 @@ app.get('/api/reservations/:id', async (req, res) => {
   }
 });
 
-// Update a reservation
 app.put('/api/reservations/:id', validateReservation, async (req, res) => {
   const { id } = req.params;
   const { name, date, time, people } = req.body;
 
-  // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -110,7 +100,6 @@ app.put('/api/reservations/:id', validateReservation, async (req, res) => {
   }
 });
 
-// Delete a reservation
 app.delete('/api/reservations/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -128,19 +117,16 @@ app.delete('/api/reservations/:id', async (req, res) => {
   }
 });
 
-// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.message);
   res.status(500).json({ error: 'Internal Server Error', details: err.message });
 });
 
-// Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -71,39 +71,6 @@ const Reservation = () => {
     }
   };
 
-  // const handleConfirmSubmit = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.post('http://localhost:5000/api/reservations', formData);
-  //     setSuccessMessage("Reservation made successfully!");
-  //     setFormData({
-  //       name: "",
-  //       date: "",
-  //       time: "",
-  //       people: "",
-  //     });
-  //     setErrors({});
-  //   } catch (error) {
-  //     if (error.response) {
-  //       if (error.response.data.errors) {
-  //         const validationErrors = error.response.data.errors.reduce((acc, err) => {
-  //           acc[err.param] = err.msg;
-  //           return acc;
-  //         }, {});
-  //         setErrors(validationErrors);
-  //       } else if (error.response.data.error === 'Time slot already booked') {
-  //         setErrors({ general: 'This time slot is already booked. Please choose a different time.' });
-  //       } else {
-  //         setErrors({ general: "An unexpected error occurred. Please try again later." });
-  //       }
-  //     } else {
-  //       setErrors({ general: "Network error. Please check your connection." });
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleConfirmSubmit = async () => {
     setLoading(true);
     try {
