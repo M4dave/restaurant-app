@@ -23,7 +23,7 @@ const Reservation = () => {
   // State to manage success message after form submission
   const [successMessage, setSuccessMessage] = useState("");
   // State to manage loading state during submission
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
 
   // Function to handle input changes
   const handleChange = (event) => {
