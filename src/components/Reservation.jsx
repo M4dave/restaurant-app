@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import axios from 'axios';
 
 const Reservation = () => {
   const [formData, setFormData] = useState({
@@ -71,13 +70,10 @@ const Reservation = () => {
     }
   };
 
-  const handleConfirmSubmit = async () => {
+  const handleConfirmSubmit = () => {
     setLoading(true);
-    try {
-      // Send the form data to the server
-      const response = await axios.post('http://localhost:5000/api/reservations', formData);
-      
-      // Handle success response
+    // Simulate a successful submission
+    setTimeout(() => {
       setSuccessMessage("Reservation made successfully!");
       setFormData({
         name: "",
@@ -86,31 +82,9 @@ const Reservation = () => {
         people: "",
       });
       setErrors({});
-    } catch (error) {
-      if (error.response) {
-        if (error.response.data.errors) {
-          // Process validation errors from the server
-          const validationErrors = error.response.data.errors.reduce((acc, err) => {
-            acc[err.param] = err.msg;
-            return acc;
-          }, {});
-          setErrors(validationErrors);
-        } else if (error.response.data.error === 'Time slot already booked') {
-          // Handle specific double-booking error
-          setErrors({ general: 'This time slot is already booked. Please choose a different time.' });
-        } else {
-          // General error handling
-          setErrors({ general: "An unexpected error occurred. Please try again later." });
-        }
-      } else {
-        // Network error handling
-        setErrors({ general: "Network error. Please check your connection." });
-      }
-    } finally {
       setLoading(false);
-    }
+    }, 1000); // Simulate a delay
   };
-  
 
   return (
     <Container
