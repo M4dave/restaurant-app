@@ -1,151 +1,194 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { useState } from "react";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Container,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 
-const ContactForm = () => {
-  // State to hold form field values
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    message: ''
+const Reservation = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    date: "",
+    time: "",
+    people: "",
   });
 
-  // State to hold confirmation message after form submission
-  const [confirmationMessage, setConfirmationMessage] = useState('');
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // State to hold validation errors for each form field
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-
-  // Handle changes in form field values
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setForm({
-      ...form,
-      [name]: value
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
-  // Handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // Reset errors before new validation
-    setErrors({
-      name: '',
-      email: '',
-      message: ''
-    });
-
-    // Basic validation
-    let hasError = false;
+  const validateForm = () => {
+    let valid = true;
     const newErrors = {};
 
-    // Validate name
-    if (!form.name) {
-      newErrors.name = 'Name is required';
-      hasError = true;
-    }
-    // Validate email
-    if (!form.email) {
-      newErrors.email = 'Email is required';
-      hasError = true;
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = 'Email is invalid';
-      hasError = true;
-    }
-    // Validate message
-    if (!form.message) {
-      newErrors.message = 'Message is required';
-      hasError = true;
+    if (!formData.name) {
+      newErrors.name = "Name is required";
+      valid = false;
     }
 
-    // If there are errors, set them in state and stop submission
-    if (hasError) {
-      setErrors(newErrors);
-      return;
+    if (!formData.date) {
+      newErrors.date = "Date is required";
+      valid = false;
     }
 
-    // Handle form submission (e.g., send data to a server)
-    console.log('Form submitted:', form);
+    if (!formData.time) {
+      newErrors.time = "Time is required";
+      valid = false;
+    } else {
+      const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/;
+      if (!timePattern.test(formData.time)) {
+        newErrors.time = "Time must be in HH:mm format";
+        valid = false;
+      }
+    }
 
-    // Set confirmation message to inform user
-    setConfirmationMessage(`Thank you, ${form.name}! Your message has been received.`);
-    
-    // Clear form fields after successful submission
-    setForm({
-      name: '',
-      email: '',
-      message: ''
-    });
+    if (!formData.people || isNaN(formData.people) || formData.people <= 0) {
+      newErrors.people = "Number of people must be a positive number";
+      valid = false;
+    }
 
-    // Clear confirmation message after 2 seconds
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (validateForm()) {
+      handleConfirmSubmit();
+    }
+  };
+
+  const handleConfirmSubmit = () => {
+    setLoading(true);
     setTimeout(() => {
-      setConfirmationMessage('');
-    }, 2000);
+      setSuccessMessage("Reservation made successfully!");
+      console.log("Reservation details:", formData); // Log reservation details
+
+      setFormData({
+        name: "",
+        date: "",
+        time: "",
+        people: "",
+      });
+      setErrors({});
+      setLoading(false);
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+      
+    }, 1000);
   };
 
   return (
-    <Box 
-      component="form" 
-      onSubmit={handleSubmit} 
-      sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        height: '100vh', // Full viewport height
-        px: 2
+    <Container
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      <Typography variant="h4" component="h2" gutterBottom>
-        Contact Us
-      </Typography>
-      <TextField
-        fullWidth
-        label="Name"
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-        margin="normal"
-        error={!!errors.name} // Highlight field if there's an error
-        helperText={errors.name} // Show error message if any
-      />
-      <TextField
-        fullWidth
-        label="Email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-        margin="normal"
-        type="email"
-        error={!!errors.email} // Highlight field if there's an error
-        helperText={errors.email} // Show error message if any
-      />
-      <TextField
-        fullWidth
-        label="Message"
-        name="message"
-        value={form.message}
-        onChange={handleChange}
-        margin="normal"
-        multiline
-        rows={4}
-        error={!!errors.message} // Highlight field if there's an error
-        helperText={errors.message} // Show error message if any
-      />
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-        Send
-      </Button>
-      {confirmationMessage && (
-        <Typography variant="h6" component="p" sx={{ mt: 2, color: 'green' }}>
-          {confirmationMessage} {/* // Show confirmation message if present */}
+      <div style={{ width: "100%", maxWidth: "600px" }}>
+        <Typography variant="h4" gutterBottom align="center">
+          Make a Reservation
         </Typography>
-      )}
-    </Box>
+
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                error={!!errors.name}
+                helperText={errors.name}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="date"
+                label="Date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                error={!!errors.date}
+                helperText={errors.date}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="time"
+                label="Time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                error={!!errors.time}
+                helperText={errors.time}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Number of People"
+                name="people"
+                value={formData.people}
+                onChange={handleChange}
+                error={!!errors.people}
+                helperText={errors.people}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={loading}
+                fullWidth
+              >
+                {loading ? <CircularProgress size={24} /> : "Reserve Table"}
+              </Button>
+            </Grid>
+
+            {errors.general && (
+              <Grid item xs={12}>
+                <Alert severity="error">{errors.general}</Alert>
+              </Grid>
+            )}
+
+            {successMessage && !errors.general && (
+              <Grid item xs={12}>
+                <Alert severity="success">{successMessage}</Alert>
+              </Grid>
+            )}
+          </Grid>
+        </form>
+      </div>
+    </Container>
   );
 };
 
-export default ContactForm;
+export default Reservation;
