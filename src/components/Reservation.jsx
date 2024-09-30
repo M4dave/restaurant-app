@@ -96,6 +96,12 @@ const Reservation = () => {
       });
       setErrors({}); // Clear any errors
       setLoading(false); // Reset loading state
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+      
     }, 1000); // Simulated delay of 1 second
   };
 
