@@ -83,27 +83,28 @@ const Reservation = () => {
 
   // Function to simulate form submission
   const handleConfirmSubmit = () => {
-    setLoading(true); // Set loading state
-    // Simulate a successful submission with a timeout
-    setTimeout(() => {
-      setSuccessMessage("Reservation made successfully!"); // Set success message
-      // Reset form data
-      setFormData({
-        name: "",
-        date: "",
-        time: "",
-        people: "",
-      });
-      setErrors({}); // Clear any errors
-      setLoading(false); // Reset loading state
-
-      // Clear success message after 3 seconds
+      setLoading(true); // Set loading state
+      // Simulate a successful submission with a timeout
       setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
-      
-    }, 1000); // Simulated delay of 1 second
-  };
+        setSuccessMessage("Reservation made successfully!"); // Set success message
+        console.log("Reservation Details:", formData); // Log reservation details to console
+        // Reset form data
+        setFormData({
+          name: "",
+          date: "",
+          time: "",
+          people: "",
+        });
+        setErrors({}); // Clear any errors
+        setLoading(false); // Reset loading state
+    
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 3000);
+        
+      }, 1000); // Simulated delay of 1 second
+    };
 
   return (
     <Container
