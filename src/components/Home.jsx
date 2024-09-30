@@ -6,7 +6,7 @@ import FreshIngredients from "./img/FreshIngredients.jpg"; // Importing image as
 import ExcellentService from "./img/ExcellentService.jpg";
 import CozyAtmosphere from "./img/CozyAtmosphere.jpg";
 import LazyLoad from "react-lazyload"; // Importing lazy loading for images
-import Footer from "./Footer";
+// import Footer from "./Footer";
 
 const Home = () => (
   <div>
