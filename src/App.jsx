@@ -1,16 +1,25 @@
-// import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Menu from "./components/Menu";
 import ContactForm from "./components/ContactForm";
-// import Footer from "./components/Footer";
+import Footer from "./components/Footer";
 import { Container, CssBaseline, Box } from "@mui/material";
 import Reservation from "./components/Reservation";
 
 // Main App component
 const App = () => (
   <Router>
+    <MainContent />
+  </Router>
+);
+
+// Main content including routing and footer logic
+const MainContent = () => {
+  const location = useLocation();
+
+  return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* Provides baseline CSS styles for Material-UI components */}
       <CssBaseline />
@@ -35,10 +44,10 @@ const App = () => (
         </Routes>
       </Container>
 
-      {/* Footer component for additional information or links */}
-      {/* <Footer /> */}
+      {/* Show Footer only on the main page */}
+      {location.pathname === "/" && <Footer />}
     </Box>
-  </Router>
-);
+  );
+};
 
 export default App;

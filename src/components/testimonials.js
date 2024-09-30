@@ -68,7 +68,7 @@ const testimonials = [
   },
   {
     name: "Krillin",
-    testimonial: "I was disappointed with the food and service. The dishes were bland, and the staff seemed uninterested.",
+    testimonial: "I was disappointed with the bland food and uninterested service.",
     imageUrl: Krillin,
     rating: 2, // Rating out of 5
     date: "2024-07-05", // ISO date format

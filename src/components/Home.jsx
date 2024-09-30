@@ -152,8 +152,9 @@ const Home = () => (
     </Box>
     <Testimonials /> {/* Render the Testimonials component at the bottom */}
     {/* Footer component for additional information or links */}
-    <Footer />
+    {/* <Footer /> */}
   </div>
+  
 );
 
 export default Home;

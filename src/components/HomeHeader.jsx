@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Container, Button } from '@mui/material'; // Importing Material-UI components
 import { Link } from 'react-router-dom'; // Importing Link component for navigation
 import restaurantImage from '../components/img/restaurant.jpg'; // Import the image
