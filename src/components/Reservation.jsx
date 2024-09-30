@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   TextField,
   Button,
@@ -176,7 +176,8 @@ const Reservation = () => {
                 disabled={loading} // Disable button when loading
                 fullWidth
               >
-                {loading ? <CircularProgress size={24} /> : "Reserve Table"} {/*  Show loading spinner or button text */}
+                {loading ? <CircularProgress size={24} /> : "Reserve Table"}{" "}
+                {/*  Show loading spinner or button text */}
               </Button>
             </Grid>
 
@@ -186,11 +187,12 @@ const Reservation = () => {
               </Grid>
             )}
 
-            {successMessage && !errors.general && ( // Show success message if exists
-              <Grid item xs={12}>
-                <Alert severity="success">{successMessage}</Alert>
-              </Grid>
-            )}
+            {successMessage &&
+              !errors.general && ( // Show success message if exists
+                <Grid item xs={12}>
+                  <Alert severity="success">{successMessage}</Alert>
+                </Grid>
+              )}
           </Grid>
         </form>
       </div>
