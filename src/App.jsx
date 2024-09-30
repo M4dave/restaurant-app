@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Home from "./components/Home";
 import Menu from "./components/Menu";
 import ContactForm from "./components/ContactForm";
-import Footer from "./components/Footer";
+// import Footer from "./components/Footer";
 import { Container, CssBaseline, Box } from "@mui/material";
 import Reservation from "./components/Reservation";
 
@@ -36,7 +36,7 @@ const App = () => (
       </Container>
 
       {/* Footer component for additional information or links */}
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   </Router>
 );

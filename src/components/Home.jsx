@@ -6,6 +6,8 @@ import FreshIngredients from './img/FreshIngredients.jpg'; // Importing image as
 import ExcellentService from './img/ExcellentService.jpg';
 import CozyAtmosphere from './img/CozyAtmosphere.jpg';
 import LazyLoad from 'react-lazyload'; // Importing lazy loading for images
+import Footer from "./components/Footer";
+
 
 const Home = () => (
   <div>
@@ -147,6 +149,8 @@ const Home = () => (
       </Grid>
     </Box>
     <Testimonials /> {/* Render the Testimonials component at the bottom */}
+          {/* Footer component for additional information or links */}
+      <Footer />
   </div>
 );
 
