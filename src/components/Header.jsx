@@ -69,7 +69,7 @@ const Header = () => {
         >
           {/* Title or brand name */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Restaurant App
+            Restaurant DC
           </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {/* Navigation buttons for larger screens */}
