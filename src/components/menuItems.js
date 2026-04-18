@@ -1,4 +1,3 @@
-// Importing images for each menu item
 import SpaghettiCarbonara from "./img/SpaghettiCarbonara.jpg";
 import MargheritaPizza from "./img/MargheritaPizza.jpg";
 import CaesarSalad from "./img/CaesarSalad.jpg";
@@ -7,65 +6,18 @@ import Tiramisu from "./img/Tiramisu.jpg";
 import GarlicBread from "./img/GarlicBread.jpg";
 import BolognesePasta from "./img/BolognesePasta.jpg";
 import CapreseSalad from "./img/CapreseSalad.jpg";
-import MushroomRisotto from "./img/MushroomRisotto.jpg"
+import MushroomRisotto from "./img/MushroomRisotto.jpg";
 
-// Array of menu items, each with properties: name, description, imageUrl, and price
 const menuItems = [
-  {
-    name: "Spaghetti Carbonara",
-    description: "Classic Italian pasta with eggs, cheese, pancetta, and pepper.",
-    imageUrl: SpaghettiCarbonara, // URL to the image for this menu item
-    price: "$12.99", // Price of the menu item
-  },
-  {
-    name: "Margherita Pizza",
-    description: "Pizza with tomato, mozzarella cheese, fresh basil, salt, and extra-virgin olive oil.",
-    imageUrl: MargheritaPizza, // URL to the image for this menu item
-    price: "$10.99", // Price of the menu item
-  },
-  {
-    name: "Caesar Salad",
-    description: "Romaine lettuce with Caesar dressing, croutons, and parmesan cheese.",
-    imageUrl: CaesarSalad, // URL to the image for this menu item
-    price: "$8.99", // Price of the menu item
-  },
-  {
-    name: "Lasagna",
-    description: "Layers of pasta with a rich meat sauce, béchamel, and cheese.",
-    imageUrl: Lasagna, // URL to the image for this menu item
-    price: "$14.99", // Price of the menu item
-  },
-  {
-    name: "Tiramisu",
-    description: "Classic Italian dessert with coffee-soaked ladyfingers, mascarpone cheese, and cocoa powder.",
-    imageUrl: Tiramisu, // URL to the image for this menu item
-    price: "$6.99", // Price of the menu item
-  },
-  {
-    name: "Garlic Bread",
-    description: "Toasted bread with garlic, butter, and herbs.",
-    imageUrl: GarlicBread, // URL to the image for this menu item
-    price: "$4.99", // Price of the menu item
-  },
-  {
-    name: "Bolognese Pasta",
-    description: "Pasta served with a hearty Bolognese sauce made from ground beef and tomatoes.",
-    imageUrl: BolognesePasta, // URL to the image for this menu item
-    price: "$13.99", // Price of the menu item
-  },
-  {
-    name: "Caprese Salad",
-    description: "Fresh tomatoes, mozzarella cheese, basil, and a drizzle of balsamic glaze.",
-    imageUrl: CapreseSalad, // URL to the image for this menu item
-    price: "$9.99", // Price of the menu item
-  },
-  {
-    name: "Mushroom Risotto",
-    description: "Creamy risotto cooked with earthy mushrooms, white wine, and parmesan cheese.",
-    imageUrl: MushroomRisotto, // URL to the image for this menu item
-    price: "$15.99", // Price of the menu item (adjust as needed)
-  },
-  // Add more menu items here as needed
+  { name: "Spaghetti Carbonara", description: "Classic Italian pasta with eggs, aged Pecorino Romano, guanciale, and black pepper.", imageUrl: SpaghettiCarbonara, price: "$12.99", category: "Pasta" },
+  { name: "Margherita Pizza", description: "San Marzano tomatoes, buffalo mozzarella, fresh basil, and cold-pressed olive oil.", imageUrl: MargheritaPizza, price: "$10.99", category: "Pizza" },
+  { name: "Caesar Salad", description: "Crisp romaine, house-made Caesar dressing, sourdough croutons, and shaved Parmigiano.", imageUrl: CaesarSalad, price: "$8.99", category: "Starters" },
+  { name: "Lasagna al Forno", description: "Slow-cooked ragù, silky béchamel, and layers of fresh pasta baked to perfection.", imageUrl: Lasagna, price: "$14.99", category: "Pasta" },
+  { name: "Tiramisu", description: "Espresso-soaked savoiardi, mascarpone cream, and a dusting of dark Valrhona cocoa.", imageUrl: Tiramisu, price: "$6.99", category: "Desserts" },
+  { name: "Garlic Focaccia", description: "House-baked focaccia brushed with roasted garlic butter and fresh rosemary.", imageUrl: GarlicBread, price: "$4.99", category: "Starters" },
+  { name: "Bolognese Pasta", description: "Twelve-hour ragù of beef, pork, and aromatics over hand-rolled pappardelle.", imageUrl: BolognesePasta, price: "$13.99", category: "Pasta" },
+  { name: "Caprese Salad", description: "Heirloom tomatoes, burrata, fresh basil, aged balsamic, and Sicilian sea salt.", imageUrl: CapreseSalad, price: "$9.99", category: "Starters" },
+  { name: "Mushroom Risotto", description: "Arborio rice with wild porcini, truffle oil, white wine, and aged Parmigiano.", imageUrl: MushroomRisotto, price: "$15.99", category: "Mains" },
 ];
 
-export default menuItems; // Export the array for use in other components
+export default menuItems;

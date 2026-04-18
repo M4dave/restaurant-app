@@ -1,160 +1,200 @@
-// import React from 'react';
-import HomeHeader from "./HomeHeader"; // Importing the HomeHeader component
-import Testimonials from "./Testimonials"; // Importing the Testimonials component
-import { Box, Typography, Grid, Paper } from "@mui/material"; // Importing Material-UI components
-import FreshIngredients from "./img/FreshIngredients.jpg"; // Importing image assets
+import HomeHeader from "./HomeHeader";
+import Testimonials from "./Testimonials";
+import { Box, Typography, Grid, Container } from "@mui/material";
+import FreshIngredients from "./img/FreshIngredients.jpg";
 import ExcellentService from "./img/ExcellentService.jpg";
 import CozyAtmosphere from "./img/CozyAtmosphere.jpg";
-import LazyLoad from "react-lazyload"; // Importing lazy loading for images
-// import Footer from "./Footer";
+import LazyLoad from "react-lazyload";
+
+const features = [
+  {
+    img: FreshIngredients,
+    title: "Fresh Ingredients",
+    description: "We source only the finest seasonal ingredients, building each dish around what's peak and vibrant — never compromised.",
+    icon: "🌿",
+  },
+  {
+    img: CozyAtmosphere,
+    title: "Cozy Atmosphere",
+    description: "Step into warm candlelight and the gentle hum of conversation — a space crafted for lingering over good food and great company.",
+    icon: "🕯️",
+  },
+  {
+    img: ExcellentService,
+    title: "Excellent Service",
+    description: "Our attentive team anticipates your every need with grace, ensuring each visit feels personal and effortlessly memorable.",
+    icon: "✦",
+  },
+];
+
+const FeatureCard = ({ feature, delay }) => (
+  <Box
+    className={`animate-in animate-delay-${delay}`}
+    sx={{
+      position: "relative",
+      overflow: "hidden",
+      border: "1px solid rgba(201,168,76,0.15)",
+      transition: "all 0.4s ease",
+      "&:hover": {
+        border: "1px solid rgba(201,168,76,0.45)",
+        transform: "translateY(-6px)",
+        "& .feature-img": { transform: "scale(1.06)" },
+        "& .feature-overlay": { opacity: 0.5 },
+      },
+    }}
+  >
+    <LazyLoad height={240} offset={100}>
+      <Box sx={{ height: 240, overflow: "hidden", position: "relative" }}>
+        <Box
+          className="feature-img"
+          sx={{
+            height: "100%",
+            width: "100%",
+            backgroundImage: `url(${feature.img})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            transition: "transform 0.6s ease",
+          }}
+        />
+        <Box
+          className="feature-overlay"
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, transparent, rgba(17,16,16,0.7))",
+            opacity: 0.3,
+            transition: "opacity 0.4s ease",
+          }}
+        />
+        <Typography
+          sx={{
+            position: "absolute",
+            bottom: 12,
+            left: 16,
+            fontSize: "1.5rem",
+          }}
+        >
+          {feature.icon}
+        </Typography>
+      </Box>
+    </LazyLoad>
+    <Box sx={{ p: 3, bgcolor: "#1a1a1a" }}>
+      <Typography
+        sx={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: "1.15rem",
+          fontWeight: 600,
+          color: "#f5f0e8",
+          mb: 1,
+        }}
+      >
+        {feature.title}
+      </Typography>
+      <Typography
+        variant="body2"
+        sx={{ color: "rgba(245,240,232,0.65)", lineHeight: 1.75, fontWeight: 300 }}
+      >
+        {feature.description}
+      </Typography>
+    </Box>
+  </Box>
+);
 
 const Home = () => (
-  <div>
-    <HomeHeader /> {/* Render the HomeHeader component at the top */}
-    <Box sx={{ flexGrow: 1, py: 8 }}>
-      {/* Main section container with padding */}
-      <Typography variant="h4" component="h2" gutterBottom align="center">
-        Discover Our Delights
-      </Typography>
-      {/* Title for the section */}
-      <Grid container spacing={4} sx={{ mt: 4 }}>
-        {/* Grid container for layout with spacing */}
+  <Box>
+    <HomeHeader />
 
-        {/* Grid item for Fresh Ingredients */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper
-            elevation={3} // Shadow depth
+    {/* Features section */}
+    <Box sx={{ bgcolor: "#111010", py: { xs: 8, md: 12 } }}>
+      <Container maxWidth="lg">
+        <Box sx={{ textAlign: "center", mb: 7 }}>
+          <Typography
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%", // Full height of the container
-              overflow: "hidden", // Hide overflow content
-              transition: "transform 0.3s ease-in-out", // Smooth scale transition on hover
-              "&:hover": {
-                transform: "scale(1.05)", // Scale up on hover
-              },
+              fontFamily: "'Cormorant Garamond', serif",
+              fontStyle: "italic",
+              color: "#c9a84c",
+              letterSpacing: "0.2em",
+              fontSize: "0.9rem",
+              mb: 1.5,
+              textTransform: "uppercase",
             }}
           >
-            <LazyLoad height={140} offset={100}>
-              {/* Lazy load the image to improve performance */}
-              <Box
-                sx={{
-                  height: 140, // Fixed height for the image container
-                  width: "100%", // Full width of the container
-                  backgroundImage: `url(${FreshIngredients})`, // Background image
-                  backgroundSize: "cover", // Cover the entire container
-                  backgroundPosition: "center", // Center the image
-                  borderBottom: "1px solid #ddd", // Light border at the bottom
-                }}
-              />
-            </LazyLoad>
-            <Box sx={{ p: 2 }}>
-              {/* Content box with padding */}
-              <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                Fresh Ingredients
-              </Typography>
-              {/* Heading for the content */}
-              <Typography variant="body2" color="text.secondary">
-                We use only the freshest ingredients to ensure that every meal
-                is both delicious and nutritious.
-              </Typography>
-              {/* Description text */}
-            </Box>
-          </Paper>
-        </Grid>
-
-        {/* Grid item for Cozy Atmosphere */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper
-            elevation={3} // Shadow depth
+            Why Choose Us
+          </Typography>
+          <Typography
+            variant="h3"
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%", // Full height of the container
-              overflow: "hidden", // Hide overflow content
-              transition: "transform 0.3s ease-in-out", // Smooth scale transition on hover
-              "&:hover": {
-                transform: "scale(1.05)", // Scale up on hover
-              },
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 700,
+              color: "#f5f0e8",
+              fontSize: { xs: "2rem", md: "2.8rem" },
             }}
           >
-            <LazyLoad height={140} offset={100}>
-              {/* Lazy load the image to improve performance */}
-              <Box
-                sx={{
-                  height: 140, // Fixed height for the image container
-                  width: "100%", // Full width of the container
-                  backgroundImage: `url(${CozyAtmosphere})`, // Background image
-                  backgroundSize: "cover", // Cover the entire container
-                  backgroundPosition: "center", // Center the image
-                  borderBottom: "1px solid #ddd", // Light border at the bottom
-                }}
-              />
-            </LazyLoad>
-            <Box sx={{ p: 2 }}>
-              {/* Content box with padding */}
-              <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                Cozy Atmosphere
-              </Typography>
-              {/* Heading for the content */}
-              <Typography variant="body2" color="text.secondary">
-                Enjoy a cozy and comfortable atmosphere that&apos;s perfect for
-                dining with friends and family.
-              </Typography>
-              {/* Description text */}
-            </Box>
-          </Paper>
-        </Grid>
-
-        {/* Grid item for Excellent Service */}
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper
-            elevation={3} // Shadow depth
+            Discover Our Delights
+          </Typography>
+          <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%", // Full height of the container
-              overflow: "hidden", // Hide overflow content
-              transition: "transform 0.3s ease-in-out", // Smooth scale transition on hover
-              "&:hover": {
-                transform: "scale(1.05)", // Scale up on hover
-              },
+              width: 50,
+              height: 1,
+              background: "linear-gradient(90deg, transparent, #c9a84c, transparent)",
+              mx: "auto",
+              mt: 2.5,
             }}
-          >
-            <LazyLoad height={140} offset={100}>
-              {/* Lazy load the image to improve performance */}
-              <Box
-                sx={{
-                  height: 140, // Fixed height for the image container
-                  width: "100%", // Full width of the container
-                  backgroundImage: `url(${ExcellentService})`, // Background image
-                  backgroundSize: "cover", // Cover the entire container
-                  backgroundPosition: "center", // Center the image
-                  borderBottom: "1px solid #ddd", // Light border at the bottom
-                }}
-              />
-            </LazyLoad>
-            <Box sx={{ p: 2 }}>
-              {/* Content box with padding */}
-              <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                Excellent Service
-              </Typography>
-              {/* Heading for the content */}
-              <Typography variant="body2" color="text.secondary">
-                Our friendly staff is dedicated to providing you with excellent
-                service and a memorable dining experience.
-              </Typography>
-              {/* Description text */}
-            </Box>
-          </Paper>
+          />
+        </Box>
+        <Grid container spacing={3}>
+          {features.map((f, i) => (
+            <Grid item xs={12} sm={6} md={4} key={f.title}>
+              <FeatureCard feature={f} delay={i + 1} />
+            </Grid>
+          ))}
         </Grid>
-      </Grid>
+      </Container>
     </Box>
-    <Testimonials /> {/* Render the Testimonials component at the bottom */}
-    {/* Footer component for additional information or links */}
-    {/* <Footer /> */}
-  </div>
-  
+
+    {/* Quote strip */}
+    <Box
+      sx={{
+        py: { xs: 8, md: 10 },
+        background: "linear-gradient(135deg, #1a1510 0%, #1a1a1a 50%, #1a1510 100%)",
+        borderTop: "1px solid rgba(201,168,76,0.12)",
+        borderBottom: "1px solid rgba(201,168,76,0.12)",
+        textAlign: "center",
+        px: 3,
+      }}
+    >
+      <Typography
+        sx={{
+          fontFamily: "'Playfair Display', serif",
+          fontStyle: "italic",
+          fontSize: { xs: "1.5rem", md: "2.2rem" },
+          color: "#f5f0e8",
+          maxWidth: 680,
+          mx: "auto",
+          lineHeight: 1.5,
+          mb: 2,
+        }}
+      >
+        "Food is our common ground, a universal experience."
+      </Typography>
+      <Typography
+        sx={{
+          fontFamily: "'Jost', sans-serif",
+          fontSize: "0.75rem",
+          letterSpacing: "0.2em",
+          color: "#c9a84c",
+          textTransform: "uppercase",
+        }}
+      >
+        — James Beard
+      </Typography>
+    </Box>
+
+    {/* Testimonials */}
+    <Box sx={{ bgcolor: "#111010", py: { xs: 8, md: 12 } }}>
+      <Testimonials />
+    </Box>
+  </Box>
 );
 
 export default Home;

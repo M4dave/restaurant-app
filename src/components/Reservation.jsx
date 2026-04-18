@@ -1,209 +1,198 @@
 import { useState } from "react";
 import {
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  Container,
-  CircularProgress,
-  Alert,
+  TextField, Button, Grid, Typography, Container,
+  CircularProgress, Alert, Box, MenuItem, Select, FormControl, InputLabel,
 } from "@mui/material";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import reservationImg from "./img/Reservation.jpg";
+
+const timeSlots = ["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00","21:30"];
+const partySizes = [1,2,3,4,5,6,7,8];
 
 const Reservation = () => {
-  // State to hold form data
-  const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    time: "",
-    people: "",
-  });
-
-  // State to hold validation errors
+  const [formData, setFormData] = useState({ name: "", date: "", time: "", people: "" });
   const [errors, setErrors] = useState({});
-  // State to manage success message after form submission
   const [successMessage, setSuccessMessage] = useState("");
-  // State to manage loading state during submission
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
-  // Function to handle input changes
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
 
-  // Function to validate form inputs
   const validateForm = () => {
-    let valid = true;
     const newErrors = {};
-
-    // Validate name
-    if (!formData.name) {
-      newErrors.name = "Name is required";
-      valid = false;
-    }
-
-    // Validate date
-    if (!formData.date) {
-      newErrors.date = "Date is required";
-      valid = false;
-    }
-
-    // Validate time and check format
-    if (!formData.time) {
-      newErrors.time = "Time is required";
-      valid = false;
-    } else {
-      const timePattern = /^([01]\d|2[0-3]):([0-5]\d)$/; // HH:mm format
-      if (!timePattern.test(formData.time)) {
-        newErrors.time = "Time must be in HH:mm format";
-        valid = false;
-      }
-    }
-
-    // Validate number of people
-    if (!formData.people || isNaN(formData.people) || formData.people <= 0) {
-      newErrors.people = "Number of people must be a positive number";
-      valid = false;
-    }
-
-    setErrors(newErrors); // Update errors state
-    return valid; // Return validation result
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.date) newErrors.date = "Date is required";
+    if (!formData.time) newErrors.time = "Please select a time slot";
+    if (!formData.people) newErrors.people = "Party size is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Function to handle form submission
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (validateForm()) {
-      handleConfirmSubmit(); // If valid, proceed to submit
+      setLoading(true);
+      setTimeout(() => {
+        setSuccessMessage(`Your table for ${formData.people} has been reserved for ${formData.date} at ${formData.time}. See you soon!`);
+        setFormData({ name: "", date: "", time: "", people: "" });
+        setErrors({});
+        setLoading(false);
+        setTimeout(() => setSuccessMessage(""), 5000);
+      }, 1200);
     }
   };
-
-  // Function to simulate form submission
-  const handleConfirmSubmit = () => {
-      setLoading(true); // Set loading state
-      // Simulate a successful submission with a timeout
-      setTimeout(() => {
-        setSuccessMessage("Reservation made successfully!"); // Set success message
-        console.log("Reservation Details:", formData); // Log reservation details to console
-        // Reset form data
-        setFormData({
-          name: "",
-          date: "",
-          time: "",
-          people: "",
-        });
-        setErrors({}); // Clear any errors
-        setLoading(false); // Reset loading state
-    
-        // Clear success message after 3 seconds
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 3000);
-        
-      }, 1000); // Simulated delay of 1 second
-    };
 
   return (
-    <Container
-      sx={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div style={{ width: "100%", maxWidth: "600px" }}>
-        <Typography variant="h4" gutterBottom align="center">
-          Make a Reservation
-        </Typography>
+    <Box sx={{ bgcolor: '#111010', minHeight: '100vh' }}>
+      <Grid container sx={{ minHeight: '100vh' }}>
+        {/* Image side */}
+        <Grid item xs={12} md={5} sx={{ display: { xs: 'none', md: 'block' } }}>
+          <Box
+            sx={{
+              height: '100%',
+              backgroundImage: `url(${reservationImg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to right, rgba(17,16,16,0) 60%, rgba(17,16,16,1) 100%)',
+              },
+            }}
+          />
+        </Grid>
 
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                error={!!errors.name} // Show error if exists
-                helperText={errors.name} // Display error message
-              />
-            </Grid>
+        {/* Form side */}
+        <Grid item xs={12} md={7}>
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              p: { xs: 4, md: 8 },
+              pt: { xs: 12, md: 8 },
+            }}
+          >
+            <Box sx={{ width: '100%', maxWidth: 500 }}>
+              <Box sx={{ mb: 5 }}>
+                <Typography sx={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', color: '#c9a84c', letterSpacing: '0.2em', fontSize: '0.85rem', mb: 1.5, textTransform: 'uppercase' }}>
+                  Reserve Your Evening
+                </Typography>
+                <Typography variant="h3" sx={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, color: '#f5f0e8', fontSize: { xs: '2rem', md: '2.6rem' }, mb: 2 }}>
+                  Book a Table
+                </Typography>
+                <Box sx={{ width: 50, height: 1, background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)' }} />
+              </Box>
 
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="date"
-                label="Date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                error={!!errors.date} // Show error if exists
-                helperText={errors.date} // Display error message
-                InputLabelProps={{ shrink: true }} // Keep label above input
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="time"
-                label="Time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                error={!!errors.time} // Show error if exists
-                helperText={errors.time} // Display error message
-                InputLabelProps={{ shrink: true }} // Keep label above input
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Number of People"
-                name="people"
-                value={formData.people}
-                onChange={handleChange}
-                error={!!errors.people} // Show error if exists
-                helperText={errors.people} // Display error message
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={loading} // Disable button when loading
-                fullWidth
-              >
-                {loading ? <CircularProgress size={24} /> : "Reserve Table"}{" "}
-                {/*  Show loading spinner or button text */}
-              </Button>
-            </Grid>
-
-            {errors.general && ( // Show general error if exists
-              <Grid item xs={12}>
-                <Alert severity="error">{errors.general}</Alert>
-              </Grid>
-            )}
-
-            {successMessage &&
-              !errors.general && ( // Show success message if exists
-                <Grid item xs={12}>
-                  <Alert severity="success">{successMessage}</Alert>
-                </Grid>
+              {successMessage && (
+                <Alert
+                  icon={<EventAvailableIcon />}
+                  sx={{
+                    mb: 3,
+                    bgcolor: 'rgba(201,168,76,0.1)',
+                    border: '1px solid rgba(201,168,76,0.4)',
+                    color: '#e2c97e',
+                    borderRadius: 0,
+                    '& .MuiAlert-icon': { color: '#c9a84c' },
+                  }}
+                >
+                  {successMessage}
+                </Alert>
               )}
-          </Grid>
-        </form>
-      </div>
-    </Container>
+
+              <Box component="form" onSubmit={handleSubmit}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Full Name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      error={!!errors.name}
+                      helperText={errors.name}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      type="date"
+                      label="Date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleChange}
+                      error={!!errors.date}
+                      helperText={errors.date}
+                      InputLabelProps={{ shrink: true }}
+                      inputProps={{ min: new Date().toISOString().split('T')[0] }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <FormControl fullWidth error={!!errors.time}>
+                      <InputLabel>Time</InputLabel>
+                      <Select
+                        name="time"
+                        value={formData.time}
+                        onChange={handleChange}
+                        label="Time"
+                        sx={{ borderRadius: 0 }}
+                      >
+                        {timeSlots.map(slot => (
+                          <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FormControl fullWidth error={!!errors.people}>
+                      <InputLabel>Party Size</InputLabel>
+                      <Select
+                        name="people"
+                        value={formData.people}
+                        onChange={handleChange}
+                        label="Party Size"
+                        sx={{ borderRadius: 0 }}
+                      >
+                        {partySizes.map(n => (
+                          <MenuItem key={n} value={n}>{n} {n === 1 ? 'Guest' : 'Guests'}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      disabled={loading}
+                      fullWidth
+                      size="large"
+                      sx={{ py: 1.5 }}
+                    >
+                      {loading ? <CircularProgress size={22} sx={{ color: '#111' }} /> : "Confirm Reservation"}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Typography sx={{ mt: 4, color: 'rgba(245,240,232,0.4)', fontSize: '0.75rem', letterSpacing: '0.05em', textAlign: 'center' }}>
+                For parties larger than 8, please call us at +1 (202) 555-0174
+              </Typography>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

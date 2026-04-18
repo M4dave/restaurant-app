@@ -1,156 +1,178 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Grid, Paper, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { Box, Typography, Container, IconButton, Rating } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Rating from '@mui/material/Rating';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import testimonials from './testimonials.js';
 
-// Number of testimonials to display per page
-const ITEMS_PER_PAGE = 3;
-const AUTOPLAY_INTERVAL = 5000; // Autoplay interval in milliseconds
+const AUTOPLAY_INTERVAL = 5000;
 
 const Testimonials = () => {
-  const [currentPage, setCurrentPage] = useState(0); // Initial page is 0
-  const [sortOrder, setSortOrder] = useState('dateDesc'); // Default sorting by date descending
+  const [current, setCurrent] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const intervalRef = useRef(null);
 
-  // Handler to go to the next page of testimonials
-  const handleNext = () => {
-    if ((currentPage + 1) * ITEMS_PER_PAGE < sortedTestimonials.length) {
-      setCurrentPage(currentPage + 1);
-    } else {
-      setCurrentPage(0); // Reset to first page if at the end
-    }
+  const sorted = [...testimonials].sort((a, b) => b.rating - a.rating);
+
+  const goTo = (idx) => {
+    if (animating) return;
+    setAnimating(true);
+    setCurrent((idx + sorted.length) % sorted.length);
+    setTimeout(() => setAnimating(false), 400);
   };
 
-  // Handler to go to the previous page of testimonials
-  const handlePrevious = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  // Handler to change the sorting order
-  const handleSortChange = (event) => {
-    setSortOrder(event.target.value);
-    setCurrentPage(0);
-  };
-
-  // Function to sort testimonials based on the selected sortOrder
-  const sortTestimonials = (testimonials) => {
-    switch (sortOrder) {
-      case 'ratingAsc':
-        return [...testimonials].sort((a, b) => a.rating - b.rating);
-      case 'ratingDesc':
-        return [...testimonials].sort((a, b) => b.rating - a.rating);
-      case 'nameAsc':
-        return [...testimonials].sort((a, b) => a.name.localeCompare(b.name));
-      case 'nameDesc':
-        return [...testimonials].sort((a, b) => b.name.localeCompare(a.name));
-      case 'dateAsc':
-        return [...testimonials].sort((a, b) => new Date(a.date) - new Date(b.date));
-      case 'dateDesc':
-        return [...testimonials].sort((a, b) => new Date(b.date) - new Date(a.date));
-      default:
-        return testimonials;
-    }
-  };
-
-  // Calculate the sorted testimonials
-  const sortedTestimonials = sortTestimonials(testimonials);
-
-  // Calculate the range of testimonials to display based on currentPage
-  const startIndex = currentPage * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentTestimonials = sortedTestimonials.slice(startIndex, endIndex);
-
-  // Autoplay functionality
   useEffect(() => {
-    const intervalId = setInterval(handleNext, AUTOPLAY_INTERVAL);
-    return () => clearInterval(intervalId); // Cleanup on component unmount
-  }, [currentPage]); // Run effect on currentPage change
+    intervalRef.current = setInterval(() => {
+      setCurrent((c) => (c + 1) % sorted.length);
+    }, AUTOPLAY_INTERVAL);
+    return () => clearInterval(intervalRef.current);
+  }, [sorted.length]);
+
+  const t = sorted[current];
 
   return (
-    <Box sx={{ flexGrow: 1, py: 8 }}>
-      {/* Title of the testimonials section */}
-      <Typography variant="h4" component="h2" gutterBottom align="center">
-        What Our Guests Are Saying
-      </Typography>
-
-      {/* Sorting controls */}
-      <Box sx={{ mb: 4, textAlign: 'center' }}>
-        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-          <InputLabel>Sort By</InputLabel>
-          <Select
-            value={sortOrder}
-            onChange={handleSortChange}
-            label="Sort By"
-          >
-            <MenuItem value="ratingAsc">Rating: Low to High</MenuItem>
-            <MenuItem value="ratingDesc">Rating: High to Low</MenuItem>
-            <MenuItem value="nameAsc">Name: A to Z</MenuItem>
-            <MenuItem value="nameDesc">Name: Z to A</MenuItem>
-            <MenuItem value="dateAsc">Date: Old to New</MenuItem>
-            <MenuItem value="dateDesc">Date: New to Old</MenuItem>
-          </Select>
-        </FormControl>
+    <Container maxWidth="lg">
+      <Box sx={{ textAlign: 'center', mb: 7 }}>
+        <Typography
+          sx={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: 'italic',
+            color: '#c9a84c',
+            letterSpacing: '0.25em',
+            fontSize: '0.85rem',
+            mb: 1.5,
+            textTransform: 'uppercase',
+          }}
+        >
+          Guest Stories
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 700,
+            color: '#f5f0e8',
+            fontSize: { xs: '2rem', md: '2.8rem' },
+          }}
+        >
+          What Our Guests Are Saying
+        </Typography>
+        <Box sx={{ width: 50, height: 1, background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)', mx: 'auto', mt: 2.5 }} />
       </Box>
 
-      {/* Testimonials grid display */}
-      <Grid container spacing={4}>
-        {currentTestimonials.map((testimonial, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-              {/* Testimonial image */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 4 }, mb: 6 }}>
+        <IconButton
+          aria-label="Previous testimonial"
+          onClick={() => goTo(current - 1)}
+          sx={{
+            color: '#c9a84c',
+            border: '1px solid rgba(201,168,76,0.3)',
+            borderRadius: 0,
+            flexShrink: 0,
+            '&:hover': { bgcolor: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.6)' },
+          }}
+        >
+          <ArrowBackIosNewIcon fontSize="small" />
+        </IconButton>
+
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 4,
+            alignItems: 'center',
+            opacity: animating ? 0 : 1,
+            transform: animating ? 'translateY(8px)' : 'translateY(0)',
+            transition: 'all 0.35s ease',
+          }}
+        >
+          <Box sx={{ flexShrink: 0, textAlign: 'center' }}>
+            <Box
+              sx={{
+                width: { xs: 100, md: 140 },
+                height: { xs: 100, md: 140 },
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '2px solid rgba(201,168,76,0.4)',
+                mx: 'auto',
+                mb: 1.5,
+                boxShadow: '0 0 30px rgba(201,168,76,0.15)',
+              }}
+            >
               <Box
-                sx={{
-                  height: 140,
-                  width: '100%',
-                  backgroundImage: `url(${testimonial.imageUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  borderRadius: 1,
-                  mb: 2,
-                }}
+                component="img"
+                src={t.imageUrl}
+                alt={t.name}
+                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
-              
-              {/* Testimonial content */}
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                  {testimonial.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  {testimonial.testimonial}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  {/* Testimonial rating */}
-                  <Rating
-                    name="read-only"
-                    value={testimonial.rating}
-                    readOnly
-                    precision={0.5}
-                    size="small"
-                    sx={{ mr: 1 }}
-                  />
-                  <Typography variant="body2" color="text.primary">
-                    {testimonial.rating} / 5
-                  </Typography>
-                </Box>
-              </Box>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-      
-      {/* Pagination controls */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <IconButton onClick={handlePrevious} disabled={currentPage === 0}>
-          <ArrowBackIosIcon />
-        </IconButton>
-        <IconButton onClick={handleNext} disabled={(currentPage + 1) * ITEMS_PER_PAGE >= sortedTestimonials.length}>
-          <ArrowForwardIosIcon />
+            </Box>
+            <Typography sx={{ fontFamily: "'Playfair Display', serif", color: '#f5f0e8', fontSize: '1rem', fontWeight: 600 }}>
+              {t.name}
+            </Typography>
+            <Typography sx={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', color: '#c9a84c', fontSize: '0.8rem' }}>
+              {t.date}
+            </Typography>
+          </Box>
+
+          <Box sx={{ flex: 1 }}>
+            <FormatQuoteIcon sx={{ color: 'rgba(201,168,76,0.25)', fontSize: 60, mb: -1, ml: -1 }} />
+            <Typography
+              sx={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: { xs: '1.2rem', md: '1.55rem' },
+                fontStyle: 'italic',
+                color: '#f5f0e8',
+                lineHeight: 1.6,
+                mb: 2.5,
+              }}
+            >
+              {t.testimonial}
+            </Typography>
+            <Rating
+              value={t.rating}
+              readOnly
+              precision={0.5}
+              sx={{
+                '& .MuiRating-iconFilled': { color: '#c9a84c' },
+                '& .MuiRating-iconEmpty': { color: 'rgba(201,168,76,0.25)' },
+              }}
+            />
+          </Box>
+        </Box>
+
+        <IconButton
+          aria-label="Next testimonial"
+          onClick={() => goTo(current + 1)}
+          sx={{
+            color: '#c9a84c',
+            border: '1px solid rgba(201,168,76,0.3)',
+            borderRadius: 0,
+            flexShrink: 0,
+            '&:hover': { bgcolor: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.6)' },
+          }}
+        >
+          <ArrowForwardIosIcon fontSize="small" />
         </IconButton>
       </Box>
-    </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+        {sorted.map((_, i) => (
+          <Box
+            key={i}
+            onClick={() => goTo(i)}
+            sx={{
+              width: i === current ? 24 : 6,
+              height: 6,
+              borderRadius: 3,
+              bgcolor: i === current ? '#c9a84c' : 'rgba(201,168,76,0.3)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+          />
+        ))}
+      </Box>
+    </Container>
   );
 };
 

@@ -1,164 +1,192 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Toolbar,
-  Typography,
-  Button,
-  Container,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
+  Box, Toolbar, Typography, Button, Container,
+  IconButton, Drawer, List, ListItem, ListItemText, Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import { Link, useLocation } from "react-router-dom";
 
-const Header = () => {
-  // State to manage the open/close state of the drawer
+const navLinks = [
+  { label: "Home", path: "/" },
+  { label: "Menu", path: "/menu" },
+  { label: "Reservation", path: "/reservation" },
+  { label: "Contact", path: "/contact" },
+];
+
+const Header = ({ cartCount = 0 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  // State to keep track of the previous scroll position for hiding/showing the header
+  const [scrolled, setScrolled] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-
-  // State to manage whether the header should be visible or hidden based on scrolling
   const [showHeader, setShowHeader] = useState(true);
-
-  // Function to open the drawer
-  const handleDrawerOpen = () => setDrawerOpen(true);
-
-  // Function to close the drawer
-  const handleDrawerClose = () => setDrawerOpen(false);
+  const location = useLocation();
 
   useEffect(() => {
-    // Function to handle scroll events and toggle header visibility
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      // Show header when scrolling up or when at the top of the page
+      setScrolled(currentScrollPos > 20);
       setShowHeader(prevScrollPos > currentScrollPos || currentScrollPos < 10);
       setPrevScrollPos(currentScrollPos);
     };
-
-    // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
-
-    // Cleanup event listener on component unmount
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [prevScrollPos]); // Dependency array: effect depends on prevScrollPos
+  }, [prevScrollPos]);
 
   return (
     <Box
       sx={{
-        bgcolor: "black", // Background color of the header
-        color: "white", // Text color in the header
-        position: "fixed", // Fix the header to the top of the page
-        top: 0, // Position the header at the top
-        width: "100%", // Full width of the viewport
-        transition: "transform 0.3s ease-in-out", // Smooth transition for header visibility
-        transform: showHeader ? "translateY(0)" : "translateY(-100%)", // Show/hide the header based on scroll position
-        zIndex: 1100, // Ensure the header is above other content
+        position: "fixed",
+        top: 0,
+        width: "100%",
+        zIndex: 1100,
+        transition: "all 0.4s ease",
+        transform: showHeader ? "translateY(0)" : "translateY(-100%)",
+        background: scrolled
+          ? "rgba(17,16,16,0.97)"
+          : "linear-gradient(to bottom, rgba(17,16,16,0.9), transparent)",
+        backdropFilter: scrolled ? "blur(12px)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(201,168,76,0.15)" : "none",
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {/* Title or brand name */}
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Restaurant DC
-          </Typography>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            {/* Navigation buttons for larger screens */}
-            <Button color="inherit" component={Link} to="/" aria-label="Home">
-              Home
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/menu"
-              aria-label="Menu"
-            >
-              Menu
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/contact"
-              aria-label="Contact"
-            >
-              Contact
-            </Button>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/reservation"
-              aria-label="Reservation"
-            >
-              Reservation
-            </Button>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 0.5 }}>
+          {/* Logo */}
+          <Box
+            component={Link}
+            to="/"
+            sx={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <Box sx={{ textAlign: "left" }}>
+              <Typography
+                sx={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  color: "#f5f0e8",
+                  letterSpacing: "0.04em",
+                  lineHeight: 1.1,
+                }}
+              >
+                Restaurant
+              </Typography>
+              <Typography
+                sx={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: "italic",
+                  fontSize: "0.8rem",
+                  color: "#c9a84c",
+                  letterSpacing: "0.2em",
+                  lineHeight: 1,
+                }}
+              >
+                — DC —
+              </Typography>
+            </Box>
           </Box>
+
+          {/* Desktop nav */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 0.5 }}>
+            {navLinks.map((link) => (
+              <Button
+                key={link.path}
+                component={Link}
+                to={link.path}
+                sx={{
+                  color: location.pathname === link.path ? "#c9a84c" : "#f5f0e8",
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: "0.72rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  fontWeight: location.pathname === link.path ? 600 : 400,
+                  px: 2,
+                  py: 1,
+                  position: "relative",
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    bottom: 4,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: location.pathname === link.path ? "20px" : "0",
+                    height: "1px",
+                    background: "#c9a84c",
+                    transition: "width 0.3s ease",
+                  },
+                  "&:hover": { color: "#c9a84c" },
+                  "&:hover::after": { width: "20px" },
+                }}
+              >
+                {link.label}
+              </Button>
+            ))}
+            <IconButton aria-label="Shopping bag" sx={{ ml: 1, color: "#f5f0e8", "&:hover": { color: "#c9a84c" } }}>
+              <Badge badgeContent={cartCount} color="primary" sx={{ "& .MuiBadge-badge": { bgcolor: "#c9a84c", color: "#111" } }}>
+                <ShoppingBagOutlinedIcon fontSize="small" />
+              </Badge>
+            </IconButton>
+          </Box>
+
+          {/* Mobile menu button */}
           <IconButton
             color="inherit"
-            sx={{ display: { xs: "flex", md: "none" } }} // Show only on small screens
-            onClick={handleDrawerOpen}
-            aria-label="Open menu"
+            sx={{ display: { xs: "flex", md: "none" }, color: "#f5f0e8" }}
+            onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
           </IconButton>
         </Toolbar>
       </Container>
 
-      {/* Drawer component for mobile navigation */}
+      {/* Mobile Drawer */}
       <Drawer
-        anchor="right" // Position the drawer on the right side
-        open={drawerOpen} // Open state controlled by the drawerOpen state
-        onClose={handleDrawerClose} // Close the drawer when clicking outside or pressing the escape key
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
         sx={{
           "& .MuiDrawer-paper": {
-            width: 240,
-            bgcolor: "black",
-            color: "white",
+            width: 280,
+            bgcolor: "#111010",
+            borderLeft: "1px solid rgba(201,168,76,0.2)",
+            p: 3,
           },
-        }} // Styling for the drawer paper
+        }}
       >
-        <List>
-          {/* Navigation items in the drawer */}
-          <ListItem
-            component={Link}
-            to="/"
-            onClick={handleDrawerClose}
-            aria-label="Home"
-          >
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem
-            component={Link}
-            to="/menu"
-            onClick={handleDrawerClose}
-            aria-label="Menu"
-          >
-            <ListItemText primary="Menu" />
-          </ListItem>
-          <ListItem
-            component={Link}
-            to="/contact"
-            onClick={handleDrawerClose}
-            aria-label="Contact"
-          >
-            <ListItemText primary="Contact" />
-          </ListItem>
-          <ListItem
-            component={Link}
-            to="/reservation"
-            onClick={handleDrawerClose}
-            aria-label="Reservation"
-          >
-            <ListItemText primary="Reservation" />
-          </ListItem>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
+          <Typography sx={{ fontFamily: "'Playfair Display', serif", color: "#c9a84c", fontSize: "1.1rem" }}>
+            Menu
+          </Typography>
+          <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "#f5f0e8" }}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <List sx={{ p: 0 }}>
+          {navLinks.map((link) => (
+            <ListItem
+              key={link.path}
+              component={Link}
+              to={link.path}
+              onClick={() => setDrawerOpen(false)}
+              sx={{
+                px: 0,
+                py: 1.5,
+                borderBottom: "1px solid rgba(201,168,76,0.1)",
+                textDecoration: "none",
+                color: location.pathname === link.path ? "#c9a84c" : "#f5f0e8",
+                "&:hover": { color: "#c9a84c" },
+              }}
+            >
+              <ListItemText
+                primary={link.label}
+                primaryTypographyProps={{
+                  fontFamily: "'Jost', sans-serif",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  fontSize: "0.85rem",
+                }}
+              />
+            </ListItem>
+          ))}
         </List>
       </Drawer>
     </Box>
