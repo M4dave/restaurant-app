@@ -1,28 +1,31 @@
 import HomeHeader from "./HomeHeader";
 import Testimonials from "./Testimonials";
+import LazyImg from "./LazyImg";
 import { Box, Typography, Grid, Container } from "@mui/material";
 import FreshIngredients from "./img/FreshIngredients.jpg";
 import ExcellentService from "./img/ExcellentService.jpg";
 import CozyAtmosphere from "./img/CozyAtmosphere.jpg";
-import LazyLoad from "react-lazyload";
 
 const features = [
   {
     img: FreshIngredients,
     title: "Fresh Ingredients",
-    description: "We source only the finest seasonal ingredients, building each dish around what's peak and vibrant — never compromised.",
+    description:
+      "We source only the finest seasonal ingredients, building each dish around what's peak and vibrant — never compromised.",
     icon: "🌿",
   },
   {
     img: CozyAtmosphere,
     title: "Cozy Atmosphere",
-    description: "Step into warm candlelight and the gentle hum of conversation — a space crafted for lingering over good food and great company.",
+    description:
+      "Step into warm candlelight and the gentle hum of conversation — a space crafted for lingering over good food and great company.",
     icon: "🕯️",
   },
   {
     img: ExcellentService,
     title: "Excellent Service",
-    description: "Our attentive team anticipates your every need with grace, ensuring each visit feels personal and effortlessly memorable.",
+    description:
+      "Our attentive team anticipates your every need with grace, ensuring each visit feels personal and effortlessly memorable.",
     icon: "✦",
   },
 ];
@@ -38,46 +41,49 @@ const FeatureCard = ({ feature, delay }) => (
       "&:hover": {
         border: "1px solid rgba(201,168,76,0.45)",
         transform: "translateY(-6px)",
-        "& .feature-img": { transform: "scale(1.06)" },
         "& .feature-overlay": { opacity: 0.5 },
       },
     }}
   >
-    <LazyLoad height={240} offset={100}>
-      <Box sx={{ height: 240, overflow: "hidden", position: "relative" }}>
-        <Box
-          className="feature-img"
-          sx={{
-            height: "100%",
-            width: "100%",
-            backgroundImage: `url(${feature.img})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            transition: "transform 0.6s ease",
-          }}
-        />
-        <Box
-          className="feature-overlay"
-          sx={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, transparent, rgba(17,16,16,0.7))",
-            opacity: 0.3,
-            transition: "opacity 0.4s ease",
-          }}
-        />
-        <Typography
-          sx={{
-            position: "absolute",
-            bottom: 12,
-            left: 16,
-            fontSize: "1.5rem",
-          }}
-        >
-          {feature.icon}
-        </Typography>
-      </Box>
-    </LazyLoad>
+    {/* Image with smooth fade-in */}
+    <Box sx={{ position: "relative", height: 240 }}>
+      <LazyImg
+        src={feature.img}
+        alt={feature.title}
+        height={240}
+        sx={{
+          "& .lazy-img": {
+            transition: "transform 0.6s ease, opacity 0.55s ease",
+          },
+          "&:hover .lazy-img": { transform: "scale(1.06)" },
+        }}
+      />
+      {/* Gradient overlay */}
+      <Box
+        className="feature-overlay"
+        sx={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to bottom, transparent, rgba(17,16,16,0.7))",
+          opacity: 0.3,
+          transition: "opacity 0.4s ease",
+          pointerEvents: "none",
+        }}
+      />
+      <Typography
+        sx={{
+          position: "absolute",
+          bottom: 12,
+          left: 16,
+          fontSize: "1.5rem",
+          zIndex: 2,
+        }}
+      >
+        {feature.icon}
+      </Typography>
+    </Box>
+
     <Box sx={{ p: 3, bgcolor: "#1a1a1a" }}>
       <Typography
         sx={{

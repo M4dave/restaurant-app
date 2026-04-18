@@ -4,9 +4,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CheckIcon from '@mui/icons-material/Check';
 import menuItems from './menuItems.js';
-import LazyLoad from 'react-lazyload';
+import LazyImg from './LazyImg';
 
-const categories = ["All", ...new Set(menuItems.map(i => i.category))];
+const categories = ['All', ...new Set(menuItems.map((i) => i.category))];
 
 const MenuCard = ({ item, onAdd }) => {
   const [added, setAdded] = useState(false);
@@ -31,50 +31,67 @@ const MenuCard = ({ item, onAdd }) => {
           border: '1px solid rgba(201,168,76,0.4)',
           transform: 'translateY(-4px)',
           boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
-          '& .menu-img': { transform: 'scale(1.05)' },
+          '& .lazy-img': { transform: 'scale(1.05)' },
         },
       }}
     >
-      <LazyLoad height={220} offset={100}>
-        <Box sx={{ height: 220, overflow: 'hidden', position: 'relative' }}>
-          <Box
-            className="menu-img"
+      {/* Image with smooth fade */}
+      <Box sx={{ position: 'relative', height: 220, flexShrink: 0 }}>
+        <LazyImg
+          src={item.imageUrl}
+          alt={item.name}
+          height={220}
+          sx={{
+            '& .lazy-img': { transition: 'transform 0.5s ease, opacity 0.55s ease' },
+          }}
+        />
+        {/* Category badge */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            bgcolor: 'rgba(17,16,16,0.75)',
+            border: '1px solid rgba(201,168,76,0.4)',
+            px: 1.5,
+            py: 0.4,
+            zIndex: 2,
+          }}
+        >
+          <Typography
             sx={{
-              height: '100%',
-              width: '100%',
-              backgroundImage: `url(${item.imageUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              transition: 'transform 0.5s ease',
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 12,
-              right: 12,
-              bgcolor: 'rgba(17,16,16,0.75)',
-              border: '1px solid rgba(201,168,76,0.4)',
-              px: 1.5,
-              py: 0.4,
+              fontFamily: "'Cormorant Garamond', serif",
+              color: '#c9a84c',
+              fontSize: '0.8rem',
+              letterSpacing: '0.05em',
             }}
           >
-            <Typography sx={{ fontFamily: "'Cormorant Garamond', serif", color: '#c9a84c', fontSize: '0.8rem', letterSpacing: '0.05em' }}>
-              {item.category}
-            </Typography>
-          </Box>
+            {item.category}
+          </Typography>
         </Box>
-      </LazyLoad>
+      </Box>
 
       <Box sx={{ p: 2.5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <Typography
-          sx={{ fontFamily: "'Playfair Display', serif", fontSize: '1.05rem', fontWeight: 600, color: '#f5f0e8', mb: 0.75 }}
+          sx={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: '1.05rem',
+            fontWeight: 600,
+            color: '#f5f0e8',
+            mb: 0.75,
+          }}
         >
           {item.name}
         </Typography>
         <Typography
           variant="body2"
-          sx={{ color: 'rgba(245,240,232,0.6)', lineHeight: 1.7, fontWeight: 300, flexGrow: 1, mb: 2 }}
+          sx={{
+            color: 'rgba(245,240,232,0.6)',
+            lineHeight: 1.7,
+            fontWeight: 300,
+            flexGrow: 1,
+            mb: 2,
+          }}
         >
           {item.description}
         </Typography>
@@ -130,9 +147,9 @@ const Menu = ({ setCartCount }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const handleAdd = () => setCartCount(c => c + 1);
+  const handleAdd = () => setCartCount((c) => c + 1);
 
-  const filteredItems = menuItems.filter(item => {
+  const filteredItems = menuItems.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
     return matchesSearch && matchesCategory;
@@ -168,7 +185,14 @@ const Menu = ({ setCartCount }) => {
           >
             Our Menu
           </Typography>
-          <Box sx={{ width: 50, height: 1, background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)', mx: 'auto' }} />
+          <Box
+            sx={{
+              width: 50,
+              height: 1,
+              background: 'linear-gradient(90deg, transparent, #c9a84c, transparent)',
+              mx: 'auto',
+            }}
+          />
         </Box>
 
         {/* Filters */}
@@ -204,7 +228,10 @@ const Menu = ({ setCartCount }) => {
                   borderColor: activeCategory === cat ? '#c9a84c' : 'rgba(201,168,76,0.25)',
                   bgcolor: activeCategory === cat ? 'rgba(201,168,76,0.15)' : 'transparent',
                   color: activeCategory === cat ? '#c9a84c' : 'rgba(245,240,232,0.6)',
-                  '&:hover': { bgcolor: 'rgba(201,168,76,0.1)', borderColor: 'rgba(201,168,76,0.5)' },
+                  '&:hover': {
+                    bgcolor: 'rgba(201,168,76,0.1)',
+                    borderColor: 'rgba(201,168,76,0.5)',
+                  },
                   transition: 'all 0.25s ease',
                 }}
               />
@@ -223,7 +250,14 @@ const Menu = ({ setCartCount }) => {
           ) : (
             <Grid item xs={12}>
               <Box sx={{ textAlign: 'center', py: 8 }}>
-                <Typography sx={{ color: 'rgba(245,240,232,0.4)', fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: '1.2rem' }}>
+                <Typography
+                  sx={{
+                    color: 'rgba(245,240,232,0.4)',
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontStyle: 'italic',
+                    fontSize: '1.2rem',
+                  }}
+                >
                   No dishes found matching your search.
                 </Typography>
               </Box>
