@@ -36,15 +36,14 @@ const MenuCard = ({ item, onAdd }) => {
       }}
     >
       {/* Image with smooth fade */}
-      <Box sx={{ position: 'relative', height: 220, flexShrink: 0 }}>
-        <LazyImg
-          src={item.imageUrl}
-          alt={item.name}
-          height={220}
-          sx={{
-            '& .lazy-img': { transition: 'transform 0.5s ease, opacity 0.55s ease' },
-          }}
-        />
+      <Box sx={{ position: 'relative', height: 220, flexShrink: 0, overflow: 'hidden' }}>
+        <div className="menu-img-zoom">
+          <LazyImg
+            src={item.imageUrl}
+            alt={item.name}
+            height={220}
+          />
+        </div>
         {/* Category badge */}
         <Box
           sx={{

@@ -32,7 +32,7 @@ const features = [
 
 const FeatureCard = ({ feature, delay }) => (
   <Box
-    className={`animate-in animate-delay-${delay}`}
+    className={`animate-in animate-delay-${delay} feature-card-hover`}
     sx={{
       position: "relative",
       overflow: "hidden",
@@ -47,17 +47,13 @@ const FeatureCard = ({ feature, delay }) => (
   >
     {/* Image with smooth fade-in */}
     <Box sx={{ position: "relative", height: 240 }}>
-      <LazyImg
-        src={feature.img}
-        alt={feature.title}
-        height={240}
-        sx={{
-          "& .lazy-img": {
-            transition: "transform 0.6s ease, opacity 0.55s ease",
-          },
-          "&:hover .lazy-img": { transform: "scale(1.06)" },
-        }}
-      />
+      <div className="feature-img-zoom">
+        <LazyImg
+          src={feature.img}
+          alt={feature.title}
+          height={240}
+        />
+      </div>
       {/* Gradient overlay */}
       <Box
         className="feature-overlay"
